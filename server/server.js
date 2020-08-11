@@ -5,8 +5,11 @@ const path = require('path');
 const PORT = 3000;
 
 const db = require('./models/models');
+console.log(process.env.NODE_ENV)
 
-console.log("H")
+app.use('/', express.static(path.join(__dirname, '../dist')));
+// serve index.html on the route '/'
+app.get('/', (req, res) => res.status(200).sendFile(path.resolve(__dirname, '../dist/index.html')));
 
 app.get('/test', (req, res) => {
     const queryStr = 'SELECT * FROM "people" LIMIT 100'
@@ -21,7 +24,6 @@ app.get('/test', (req, res) => {
         }))
 })
 
-app.get('/', (req, res) => res.status(200).sendFile(path.resolve(__dirname, '../dist/index.html')))
 
 // catch-all route handler for any requests to an unknown route
 app.use((req, res) => res.sendStatus(404));

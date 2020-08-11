@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    entry: './client/index.ts',
+    entry: './client/index.tsx',
     devtool: 'inline-source-map',
     mode: process.env.NODE_ENV,
     module: {
@@ -24,6 +24,12 @@ module.exports = {
     devServer: {
         host: 'localhost',
         port: 8080,
+        // enable HMR on the devServer
+        hot: true,
+        // match the output 'publicPath'
+        publicPath: '/',
+        // fallback to root for other urls
+        historyApiFallback: true,
         // match the output path
         contentBase: path.resolve(__dirname, 'dist'),
     },
