@@ -1,9 +1,10 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: './client/index.ts',
     devtool: 'inline-source-map',
-    mode: 'development',
+    mode: process.env.NODE_ENV,
     module: {
         rules: [
             {
@@ -25,5 +26,10 @@ module.exports = {
         port: 8080,
         // match the output path
         contentBase: path.resolve(__dirname, 'dist'),
-    }
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: './client/index.html'
+        })
+    ]
 };

@@ -6,8 +6,9 @@ const PORT = 3000;
 
 const db = require('./models/models');
 
-app.get('/test', (req, res) => {
+console.log("H")
 
+app.get('/test', (req, res) => {
     const queryStr = 'SELECT * FROM "people" LIMIT 100'
     db.query(queryStr)
         .then(data => {
@@ -20,7 +21,7 @@ app.get('/test', (req, res) => {
         }))
 })
 
-app.get('/', (req, res) => res.status(200).sendFile(path.resolve(__dirname, '../client/index.html')))
+app.get('/', (req, res) => res.status(200).sendFile(path.resolve(__dirname, '../dist/index.html')))
 
 // catch-all route handler for any requests to an unknown route
 app.use((req, res) => res.sendStatus(404));
