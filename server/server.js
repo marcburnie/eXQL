@@ -1,19 +1,41 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+const query = require("./utils/query");
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 const PORT = 3000;
 
 const db = require('./models/models');
-console.log(process.env.NODE_ENV)
+//print current mode
+console.log("Mode:", process.env.NODE_ENV)
+
+// require routers
+const tableRouter = require("./routes/tables");
+
+//Global middleware
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+//Routes
+app.use('/table', tableRouter)
 
 app.use('/', express.static(path.join(__dirname, '../dist')));
 // serve index.html on the route '/'
 app.get('/', (req, res) => res.status(200).sendFile(path.resolve(__dirname, '../dist/index.html')));
 
-app.get('/test', (req, res) => {
+app.get("/login", (req, res) => res.status(200).sendFile(path.resolve(__dirname, '../client/views/login.html')))
+app.post("/login", (req, res) => {
+    console.log(req.body)
+    res.redirect("/")
+
+})
+
+app.get('/test', (req, res, next) => {
     const queryStr = 'SELECT * FROM "people" LIMIT 100'
-    db.query(queryStr)
+    db.query(query.allTables())
         .then(data => {
             res.locals.table = data.rows
             res.status(200).json(res.locals.table)
