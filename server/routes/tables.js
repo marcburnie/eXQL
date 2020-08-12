@@ -16,6 +16,14 @@ router.get(
     }
 );
 
+router.put(
+    "/:table",
+    tableController.editRows,
+    (req, res) => {
+        return res.status(200).json({});
+    }
+);
+
 
 // router.delete(
 //     "/:id",

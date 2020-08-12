@@ -18,4 +18,11 @@ query.pullTable = (tableName) => {
     return `SELECT * FROM "${tableName}" LIMIT 5`
 }
 
+query.editRow = (table, rowNumFrom, rowNumTo, column, value) => {
+    return `
+        UPDATE ${table}
+        SET ${column} = '${value}'
+        WHERE _id >= ${rowNumFrom} AND _id <= ${rowNumTo};`
+}
+
 module.exports = query;

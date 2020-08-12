@@ -9,13 +9,12 @@ class App extends Component {
         super(props);
         this.state = {
             tableData: [],
-            loadedTable: {
-                columns: [],
-                rows: [],
-                name: ""
-            }
+            columns: [],
+            rows: [],
+            name: ""
         }
         this.loadTable = this.loadTable.bind(this);
+        this.onGridRowsUpdated = this.onGridRowsUpdated.bind(this);
     }
 
     componentDidMount() {
@@ -31,9 +30,34 @@ class App extends Component {
         const url = `http://localhost:3000/table/${tablename}`;
         fetch(url)
             .then((response) => response.json())
-            .then((data) => this.setState({ ...this.state, loadedTable: data }))
+            .then((data) => this.setState({ ...this.state, ...data }))
             .catch((error) => console.log("Error:", error));
     }
+
+    onGridRowsUpdated({ fromRow, toRow, updated }) {
+        console.log(fromRow, toRow, updated)
+
+        const url = `http://localhost:3000/table/${this.state.name}`;
+        fetch(url, {
+            credentials: 'same-origin',
+            method: 'PUT',
+            body: JSON.stringify({ fromRow, toRow, updated }),
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            }),
+        })
+            .then((response) => response.json())
+            .then((data) => console.log("Successfully updated table"))
+            .catch((error) => console.log("Error:", error));
+
+        this.setState(state => {
+            const rows = state.rows.slice();
+            for (let i = fromRow; i <= toRow; i++) {
+                rows[i] = { ...rows[i], ...updated };
+            }
+            return { rows };
+        });
+    };
 
 
     render() {
@@ -41,28 +65,32 @@ class App extends Component {
         const tables = [];
 
         this.state.tableData.forEach((t, i) => {
-            if (t.table_name !== this.state.loadedTable.name) {
+            if (t.table_name !== this.state.name) {
                 tables.push(
                     <SummaryTable
                         id={t.table_name}
                         key={`table${i}`}
                         columns={t.columns}
                         loadTable={this.loadTable}
+
                     />
                 )
             }
         })
 
-        const rowGetter = rowNumber => this.state.loadedTable.rows[rowNumber];
+        const rowGetter = rowNumber => this.state.rows[rowNumber];
 
         return (
             <div className="app">
-                <div className={`fullTable ${this.state.loadedTable.columns.length === 0 && 'hidden'}`}>
+                <div className={`fullTable ${this.state.columns.length === 0 && 'hidden'}`}>
                     <ReactDataGrid
-                        columns={this.state.loadedTable.columns}
+                        columns={this.state.columns}
                         rowGetter={rowGetter}
-                        rowsCount={this.state.loadedTable.rows.length}
+                        rowsCount={this.state.rows.length}
                         minHeight={500}
+                        onGridRowsUpdated={this.onGridRowsUpdated}
+                        enableCellSelect={true}
+
                     />
                 </div>
                 <div className="tableList">

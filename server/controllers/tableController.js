@@ -55,7 +55,7 @@ tableController.getTable = (req, res, next) => {
             dataGrid.name = table;
 
             for (let cName in data.rows[0]) {
-                dataGrid.columns.push({ key: cName, name: cName })
+                dataGrid.columns.push({ key: cName, name: cName, editable: true, onBeforeEdit: (c) => console.log(c) })
             }
 
             res.locals.table = dataGrid
@@ -65,21 +65,22 @@ tableController.getTable = (req, res, next) => {
             log: `Something went wrong with tableController.getTable. Hint: ${err.hint}`,
             message: { err: 'Unable to retrieve table data' }
         }))
-    // const { results } = JSON.parse(
-    //     fs.readFileSync(path.resolve(__dirname, "../data/characters.json"), "UTF-8")
-    // );
-    // if (!results) {
-    //     return next({
-    //         log:
-    //             "fileController.getCharacters: ERROR: Error getting characters data from characters.json file",
-    //         message: {
-    //             err:
-    //                 "Error occurred in fileController.getCharacters. Check server logs for more details.",
-    //         },
-    //     });
-    // }
-    // res.locals.characters = results;
-    // return next();
+};
+
+tableController.editRows = (req, res, next) => {
+    const { table } = req.params
+    const { fromRow, toRow, updated } = req.body
+    const column = Object.keys(updated)[0]
+    const value = updated[column]
+
+    db.query(query.editRow(table, fromRow, toRow, column, value))
+        .then(data => {
+            return next();
+        })
+        .catch(err => next({
+            log: `Something went wrong with tableController.getTable. Hint: ${err.hint}`,
+            message: { err: 'Unable to retrieve table data' }
+        }))
 };
 
 module.exports = tableController;
