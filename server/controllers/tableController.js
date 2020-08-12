@@ -48,7 +48,17 @@ tableController.getTable = (req, res, next) => {
 
     db.query(query.pullTable(table))
         .then(data => {
-            res.locals.table = data.rows
+
+            const dataGrid = {};
+            dataGrid.columns = [];
+            dataGrid.rows = data.rows;
+            dataGrid.name = table;
+
+            for (let cName in data.rows[0]) {
+                dataGrid.columns.push({ key: cName, name: cName })
+            }
+
+            res.locals.table = dataGrid
             return next();
         })
         .catch(err => next({

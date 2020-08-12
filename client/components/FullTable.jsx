@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class SummaryTable extends Component {
+class FullTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -28,11 +28,11 @@ class SummaryTable extends Component {
         })
         return (
             <div className="summaryTable">
-                <h3 onClick={() => this.props.loadTable(this.props.id)}>{`${this.props.id}`}</h3>
+                <h3>{`${this.props.id}`}</h3>
                 {columns}
             </div>
         );
     }
 }
 
-export default SummaryTable;
+export default FullTable;
