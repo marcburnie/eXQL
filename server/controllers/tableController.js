@@ -53,10 +53,16 @@ tableController.getTable = (req, res, next) => {
             dataGrid.columns = [];
             dataGrid.rows = data.rows;
             dataGrid.name = table;
+            //create additional row for editing
+            dataGrid.rows.push({ ...data.rows[0] })
 
-            for (let cName in data.rows[0]) {
+            for (let cName in dataGrid.rows[dataGrid.rows.length - 1]) {
+                //create additional column
                 dataGrid.columns.push({ key: cName, name: cName, editable: true, onBeforeEdit: (c) => console.log(c) })
+                //clear entry
+                dataGrid.rows[dataGrid.rows.length - 1][cName] = ""
             }
+
 
             res.locals.table = dataGrid
             return next();
@@ -69,18 +75,45 @@ tableController.getTable = (req, res, next) => {
 
 tableController.editRows = (req, res, next) => {
     const { table } = req.params
-    const { fromRow, toRow, updated } = req.body
+    const { from, to, updated } = req.body
     const column = Object.keys(updated)[0]
     const value = updated[column]
 
-    db.query(query.editRow(table, fromRow, toRow, column, value))
+    db.query(query.editRow(table, from, to, column, value))
         .then(data => {
             return next();
         })
         .catch(err => next({
-            log: `Something went wrong with tableController.getTable. Hint: ${err.hint}`,
-            message: { err: 'Unable to retrieve table data' }
+            log: `Something went wrong with tableController.editRows. Hint: ${err.hint}`,
+            message: { err: 'Unable to edit table data' }
         }))
+};
+
+tableController.addRow = (req, res, next) => {
+    const { table } = req.params;
+
+    db.query(query.addRow(table, req.body))
+        .then(data => {
+            res.locals.addedRow = true;
+            return next();
+        })
+        .catch(err => {
+            res.locals.addedRow = false;
+            next()
+        })
+    // const { table } = req.params
+    // const { fromRow, toRow, updated } = req.body
+    // const column = Object.keys(updated)[0]
+    // const value = updated[column]
+
+    // db.query(query.editRow(table, fromRow + 1, toRow + 1, column, value))
+    //     .then(data => {
+    //         return next();
+    //     })
+    //     .catch(err => next({
+    //         log: `Something went wrong with tableController.getTable. Hint: ${err.hint}`,
+    //         message: { err: 'Unable to retrieve table data' }
+    //     }))
 };
 
 module.exports = tableController;

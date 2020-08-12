@@ -26,7 +26,6 @@ class App extends Component {
     }
 
     loadTable(tablename) {
-        console.log(tablename, " clicked")
         const url = `http://localhost:3000/table/${tablename}`;
         fetch(url)
             .then((response) => response.json())
@@ -35,21 +34,7 @@ class App extends Component {
     }
 
     onGridRowsUpdated({ fromRow, toRow, updated }) {
-        console.log(fromRow, toRow, updated)
-
-        const url = `http://localhost:3000/table/${this.state.name}`;
-        fetch(url, {
-            credentials: 'same-origin',
-            method: 'PUT',
-            body: JSON.stringify({ fromRow, toRow, updated }),
-            headers: new Headers({
-                'Content-Type': 'application/json'
-            }),
-        })
-            .then((response) => response.json())
-            .then((data) => console.log("Successfully updated table"))
-            .catch((error) => console.log("Error:", error));
-
+        //update state
         this.setState(state => {
             const rows = state.rows.slice();
             for (let i = fromRow; i <= toRow; i++) {
@@ -57,8 +42,38 @@ class App extends Component {
             }
             return { rows };
         });
-    };
+        //update database
+        const url = `http://localhost:3000/table/${this.state.name}`;
+        //attempt to write last row if it has been modified
+        if (toRow === this.state.rows.length - 1) {
+            fetch(url, {
+                credentials: 'same-origin',
+                method: 'POST',
+                body: JSON.stringify({ ...this.state.rows[this.state.rows.length - 1], ...updated }),
+                headers: new Headers({
+                    'Content-Type': 'application/json'
+                }),
+            }).then((response) => response.json())
+                .then((addedRow) => {
+                    if (addedRow === true) this.loadTable(this.state.name)
+                })
+                .catch((error) => console.log("Error:", error));
+        }
+        if (fromRow < this.state.rows.length - 1) {
+            const from = this.state.rows[fromRow]["_id"];
+            const to = this.state.rows[toRow]["_id"];
+            console.log(from, to)
 
+            fetch(url, {
+                credentials: 'same-origin',
+                method: 'PUT',
+                body: JSON.stringify({ from, to, updated }),
+                headers: new Headers({
+                    'Content-Type': 'application/json'
+                }),
+            }).catch((error) => console.log("Error:", error));
+        }
+    };
 
     render() {
         console.log(this.state)

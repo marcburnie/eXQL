@@ -24,6 +24,14 @@ router.put(
     }
 );
 
+router.post(
+    "/:table",
+    tableController.addRow,
+    (req, res) => {
+        return res.status(200).json(res.locals.addedRow);
+    }
+);
+
 
 // router.delete(
 //     "/:id",
