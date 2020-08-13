@@ -18,7 +18,6 @@ router.post(
     tableController.verifyDatabase,
     cookieController.setCookie,
     (req, res) => {
-        console.log(req.body, req.params, req.query)
         return res.redirect("/");
     }
 );

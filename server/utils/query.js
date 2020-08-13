@@ -1,9 +1,4 @@
-
 const query = {};
-
-query.test = (tableName) => {
-    return `SELECT * FROM "${tableName}" LIMIT 5`
-}
 
 //must be sorted
 query.allTables = () => {
@@ -57,7 +52,7 @@ query.editRow = (table, primary_key, rowNumFrom, rowNumTo, column, value) => {
 }
 
 query.addRow = (table, primary_key, row) => {
-    console.log(row)
+
     let columnNames = "";
     let values = "";
 

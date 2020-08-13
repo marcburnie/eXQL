@@ -8,17 +8,6 @@ class FullTable extends Component {
         }
     }
 
-    componentDidMount() {
-        // const url = `http://localhost:3000/table/${this.props.id}`;
-        // fetch(url)
-        //     .then((response) => response.json())
-        //     .then((data) => {
-        //         console.log(data)
-        //         this.setState({ tableData: data })
-        //     })
-        //     .catch((error) => console.log("Error:", error));
-    }
-
     render() {
         const columns = [];
         this.props.columns.forEach(c => {
