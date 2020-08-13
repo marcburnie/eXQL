@@ -2,13 +2,26 @@
 
 const fs = require("fs");
 const path = require("path");
-const db = require('../models/models');
+// const db = require('../models/models');
 const query = require("../utils/query");
+
+const { Pool } = require('pg');
+
+let PG_URI = 'postgres://gvqpnhsz:1xQgVrDYi0X3DiC1qSzu571d5K0yc4FW@ruby.db.elephantsql.com:5432/gvqpnhsz';
+
+const db = {
+    createPool: (PG_URI) => this.pool = new Pool({ connectionString: PG_URI }),
+    query: (text, params, callback) => {
+        console.log('executed query', text);
+        return this.pool.query(text, params, callback);
+    }
+}
 
 const tableController = {};
 
 tableController.getDatabase = (req, res, next) => {
-
+    //initialize DB
+    db.createPool(PG_URI)
     //requires sorted tables list
     db.query(query.getAllTablesAndHeaders())
         .then(data => {
@@ -58,7 +71,7 @@ tableController.getTable = (req, res, next) => {
 
             for (let cName in dataGrid.rows[dataGrid.rows.length - 1]) {
                 //create additional column
-                dataGrid.columns.push({ key: cName, name: cName, editable: true, onBeforeEdit: (c) => console.log(c) })
+                dataGrid.columns.push({ key: cName, name: cName, editable: true, filterable: true, sortable: true })
                 //clear entry
                 dataGrid.rows[dataGrid.rows.length - 1][cName] = ""
             }

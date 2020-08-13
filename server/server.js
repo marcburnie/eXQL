@@ -7,7 +7,6 @@ const cookieParser = require('cookie-parser');
 
 const PORT = 3000;
 
-
 //print current mode
 console.log("Mode:", process.env.NODE_ENV)
 
@@ -21,17 +20,10 @@ app.use(cookieParser());
 
 //Routes
 app.use('/table', tableRouter)
-
+//serve static files
 app.use('/', express.static(path.join(__dirname, '../dist')));
 // serve index.html on the route '/'
 app.get('/', (req, res) => res.status(200).sendFile(path.resolve(__dirname, '../dist/index.html')));
-
-// app.get("/login", (req, res) => res.status(200).sendFile(path.resolve(__dirname, '../client/views/login.html')))
-// app.post("/login", (req, res) => {
-//     console.log(req.body)
-//     res.redirect("/")
-
-// })
 
 // catch-all route handler for any requests to an unknown route
 app.use((req, res) => res.sendStatus(404));

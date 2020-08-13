@@ -19,6 +19,7 @@ class App extends Component {
         this.loadTable = this.loadTable.bind(this);
         this.onGridRowsUpdated = this.onGridRowsUpdated.bind(this);
         this.deleteRow = this.deleteRow.bind(this);
+
     }
 
     componentDidMount() {
@@ -98,13 +99,6 @@ class App extends Component {
             .catch((error) => console.log("Error:", error));
 
     };
-
-    // const insertRow = rowIdx => rows => {
-    //     const newRow = createFakeRow("-");
-    //     const nextRows = [...rows];
-    //     nextRows.splice(rowIdx, 0, newRow);
-    //     return nextRows;
-    // };
 
     render() {
         console.log(this.state)
