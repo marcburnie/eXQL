@@ -24,7 +24,7 @@ class App extends Component {
     }
 
     componentDidMount() {
-        const url = "http://localhost:3000/table";
+        const url = "/table";
         fetch(url)
             .then((response) => response.json())
             .then((data) => this.setState({ ...this.state, tableData: data }))
@@ -33,7 +33,7 @@ class App extends Component {
 
     loadTable(tablename, primary_key) {
 
-        const url = `http://localhost:3000/table/${tablename}?primary_key=${primary_key}`;
+        const url = `/table/${tablename}?primary_key=${primary_key}`;
         fetch(url).then((response) => response.json())
             .then((data) => this.setState({ ...this.state, ...data }))
             .catch((error) => console.log("Error:", error));
@@ -49,7 +49,7 @@ class App extends Component {
             return { rows };
         });
         //update database
-        const url = `http://localhost:3000/table/${this.state.name}?primary_key=${this.state.primary_key}`;
+        const url = `/table/${this.state.name}?primary_key=${this.state.primary_key}`;
         //attempt to write last row if it has been modified
         if (toRow === this.state.rows.length - 1) {
             fetch(url, {
@@ -84,7 +84,7 @@ class App extends Component {
     };
 
     deleteRow(rowIdx) {
-        const url = `http://localhost:3000/table/${this.state.name}?primary_key=${this.state.primary_key}`;
+        const url = `/table/${this.state.name}?primary_key=${this.state.primary_key}`;
         console.log("Delete", rowIdx)
         const id = this.state.rows[rowIdx][this.state.primary_key]
 
