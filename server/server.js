@@ -4,6 +4,7 @@ const path = require('path');
 const query = require("./utils/query");
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const cookieController = require("./controllers/cookieController");
 
 const PORT = 3000;
 
@@ -12,6 +13,7 @@ console.log("Mode:", process.env.NODE_ENV)
 
 // require routers
 const tableRouter = require("./routes/tables");
+const loginRouter = require("./routes/login");
 
 //Global middleware
 app.use(express.json());
@@ -20,10 +22,15 @@ app.use(cookieParser());
 
 //Routes
 app.use('/table', tableRouter)
+// //login route
+app.use('/login', loginRouter)
+
+//auth route
+app.get('/authenticate', cookieController.setCookie, (req, res) => res.redirect('/'))
+// serve index.html on the route '/'
+app.get('/', cookieController.checkCookie, (req, res) => res.status(200).sendFile(path.resolve(__dirname, '../dist/index.html')));
 //serve static files
 app.use('/', express.static(path.join(__dirname, '../dist')));
-// serve index.html on the route '/'
-app.get('/', (req, res) => res.status(200).sendFile(path.resolve(__dirname, '../dist/index.html')));
 
 // catch-all route handler for any requests to an unknown route
 app.use((req, res) => res.sendStatus(404));

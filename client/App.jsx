@@ -14,7 +14,8 @@ class App extends Component {
             tableData: [],
             columns: [],
             rows: [],
-            name: ""
+            name: "",
+            primary_key: ""
         }
         this.loadTable = this.loadTable.bind(this);
         this.onGridRowsUpdated = this.onGridRowsUpdated.bind(this);
@@ -30,10 +31,10 @@ class App extends Component {
             .catch((error) => console.log("Error:", error));
     }
 
-    loadTable(tablename) {
-        const url = `http://localhost:3000/table/${tablename}`;
-        fetch(url)
-            .then((response) => response.json())
+    loadTable(tablename, primary_key) {
+
+        const url = `http://localhost:3000/table/${tablename}?primary_key=${primary_key}`;
+        fetch(url).then((response) => response.json())
             .then((data) => this.setState({ ...this.state, ...data }))
             .catch((error) => console.log("Error:", error));
     }
@@ -48,7 +49,7 @@ class App extends Component {
             return { rows };
         });
         //update database
-        const url = `http://localhost:3000/table/${this.state.name}`;
+        const url = `http://localhost:3000/table/${this.state.name}?primary_key=${this.state.primary_key}`;
         //attempt to write last row if it has been modified
         if (toRow === this.state.rows.length - 1) {
             fetch(url, {
@@ -61,7 +62,7 @@ class App extends Component {
             }).then((response) => response.json())
                 .then((addedRow) => {
                     if (addedRow === true) {
-                        this.loadTable(this.state.name)
+                        this.loadTable(this.state.name, this.state.primary_key)
                     }
                 })
                 .catch((error) => console.log("Error:", error));
@@ -83,19 +84,19 @@ class App extends Component {
     };
 
     deleteRow(rowIdx) {
-        const url = `http://localhost:3000/table/${this.state.name}`;
+        const url = `http://localhost:3000/table/${this.state.name}?primary_key=${this.state.primary_key}`;
         console.log("Delete", rowIdx)
-        const _id = this.state.rows[rowIdx]["_id"]
+        const id = this.state.rows[rowIdx][this.state.primary_key]
 
         fetch(url, {
             credentials: 'same-origin',
             method: 'DELETE',
-            body: JSON.stringify({ _id }),
+            body: JSON.stringify({ id }),
             headers: new Headers({
                 'Content-Type': 'application/json'
             }),
         }).then(() =>         //update state with removed row
-            this.loadTable(this.state.name))
+            this.loadTable(this.state.name, this.state.primary_key))
             .catch((error) => console.log("Error:", error));
 
     };
@@ -110,6 +111,7 @@ class App extends Component {
                     <SummaryTable
                         id={t.table_name}
                         key={`table${i}`}
+                        primary_key={t.primary_key}
                         columns={t.columns}
                         loadTable={this.loadTable}
 

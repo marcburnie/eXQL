@@ -28,7 +28,7 @@ class SummaryTable extends Component {
         })
         return (
             <div className="summaryTable">
-                <h3 onClick={() => this.props.loadTable(this.props.id)}>{`${this.props.id}`}</h3>
+                <h3 onClick={() => this.props.loadTable(this.props.id, this.props.primary_key)}>{`${this.props.id}`}</h3>
                 {columns}
             </div>
         );
