@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cookieController = require("./controllers/cookieController");
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;  //process.env.PORT for heroku
 
 //print current mode
 console.log("Mode:", process.env.NODE_ENV)
