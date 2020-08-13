@@ -32,14 +32,12 @@ router.post(
     }
 );
 
-
-// router.delete(
-//     "/:id",
-//     fileController.getFavs,
-//     fileController.deleteFavs,
-//     (req, res) => {
-//         return res.status(200).json(res.locals);
-//     }
-// );
+router.delete(
+    "/:table",
+    tableController.deleteRow,
+    (req, res) => {
+        return res.status(200).json({});
+    }
+);
 
 module.exports = router;

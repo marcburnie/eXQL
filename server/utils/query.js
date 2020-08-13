@@ -39,15 +39,17 @@ query.addRow = (table, row) => {
             values += `'${row[k]}', `
         }
     }
-    // console.log(columnNames.slice(0, -2))
-    // console.log(values.slice(0, -2))
 
     return `
         INSERT INTO ${table}(${columnNames.slice(0, -2)})
         VALUES(${values.slice(0, -2)});
     `
+}
 
-
+query.deleteRow = (table, row) => {
+    return `
+        DELETE FROM ${table} WHERE _id = ${row}
+    `
 }
 
 module.exports = query;

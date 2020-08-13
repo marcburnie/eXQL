@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import SummaryTable from "./components/SummaryTable.jsx";
+import TableContextMenu from "./components/ContextMenu.jsx";
 import ReactDataGrid from 'react-data-grid';
+import { Menu } from "react-data-grid-addons";
+const { ContextMenu, MenuItem, SubMenu, ContextMenuTrigger } = Menu;
 // import 'react-data-grid/dist/react-data-grid.css';
 // import * as React from 'react';
 
@@ -15,6 +18,7 @@ class App extends Component {
         }
         this.loadTable = this.loadTable.bind(this);
         this.onGridRowsUpdated = this.onGridRowsUpdated.bind(this);
+        this.deleteRow = this.deleteRow.bind(this);
     }
 
     componentDidMount() {
@@ -55,7 +59,9 @@ class App extends Component {
                 }),
             }).then((response) => response.json())
                 .then((addedRow) => {
-                    if (addedRow === true) this.loadTable(this.state.name)
+                    if (addedRow === true) {
+                        this.loadTable(this.state.name)
+                    }
                 })
                 .catch((error) => console.log("Error:", error));
         }
@@ -74,6 +80,31 @@ class App extends Component {
             }).catch((error) => console.log("Error:", error));
         }
     };
+
+    deleteRow(rowIdx) {
+        const url = `http://localhost:3000/table/${this.state.name}`;
+        console.log("Delete", rowIdx)
+        const _id = this.state.rows[rowIdx]["_id"]
+
+        fetch(url, {
+            credentials: 'same-origin',
+            method: 'DELETE',
+            body: JSON.stringify({ _id }),
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            }),
+        }).then(() =>         //update state with removed row
+            this.loadTable(this.state.name))
+            .catch((error) => console.log("Error:", error));
+
+    };
+
+    // const insertRow = rowIdx => rows => {
+    //     const newRow = createFakeRow("-");
+    //     const nextRows = [...rows];
+    //     nextRows.splice(rowIdx, 0, newRow);
+    //     return nextRows;
+    // };
 
     render() {
         console.log(this.state)
@@ -105,6 +136,12 @@ class App extends Component {
                         minHeight={500}
                         onGridRowsUpdated={this.onGridRowsUpdated}
                         enableCellSelect={true}
+                        contextMenu={
+                            <TableContextMenu
+                                onRowDelete={(e, { rowIdx }) => this.deleteRow(rowIdx)}
+                            />
+                        }
+                        RowsContainer={ContextMenuTrigger}
 
                     />
                 </div>

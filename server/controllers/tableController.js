@@ -101,19 +101,21 @@ tableController.addRow = (req, res, next) => {
             res.locals.addedRow = false;
             next()
         })
-    // const { table } = req.params
-    // const { fromRow, toRow, updated } = req.body
-    // const column = Object.keys(updated)[0]
-    // const value = updated[column]
+};
 
-    // db.query(query.editRow(table, fromRow + 1, toRow + 1, column, value))
-    //     .then(data => {
-    //         return next();
-    //     })
-    //     .catch(err => next({
-    //         log: `Something went wrong with tableController.getTable. Hint: ${err.hint}`,
-    //         message: { err: 'Unable to retrieve table data' }
-    //     }))
+tableController.deleteRow = (req, res, next) => {
+    const { table } = req.params;
+    const { _id } = req.body
+
+    db.query(query.deleteRow(table, _id))
+        .then(data => {
+            res.locals.addedRow = true;
+            return next();
+        })
+        .catch(err => {
+            res.locals.addedRow = false;
+            next()
+        })
 };
 
 module.exports = tableController;
