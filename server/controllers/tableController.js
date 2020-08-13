@@ -89,7 +89,6 @@ tableController.getTable = (req, res, next) => {
 
     db.query(query.pullTable(table, primary_key))
         .then(data => {
-
             const dataGrid = {};
             dataGrid.columns = [];
             dataGrid.rows = data.rows;
@@ -111,7 +110,7 @@ tableController.getTable = (req, res, next) => {
         })
         .catch(err => next({
             log: `Something went wrong with tableController.getTable. Hint: ${err.hint}`,
-            message: { err: 'Unable to retrieve table data' }
+            message: { err: 'Unable to retrieve table data. Database did not respond.' }
         }))
 };
 
@@ -132,7 +131,7 @@ tableController.editRows = (req, res, next) => {
         })
         .catch(err => next({
             log: `Something went wrong with tableController.editRows. Hint: ${err.hint}`,
-            message: { err: 'Unable to edit table data' }
+            message: { err: 'Unable to edit table data.  Database did not respond.' }
         }))
 };
 

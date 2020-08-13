@@ -5,12 +5,36 @@ body {
     font-size: smaller;
 }
 
+#navbar {
+  font-size: 20px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+}
+
+a {
+
+  color: #007bff;
+  padding: 1em;
+  box-shadow: 1px 1px 1px 1px #cacaca;
+  padding: 5px;
+  margin: 5px;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:hover {
+  color: black
+}
+
 h1 {
     margin: auto;
-    text-align: center;
-    width: 50%;
-    border-bottom: 2px black solid;
-    margin-bottom: 1em;
+    text-align: left;
+  font-size: xx-large;
+  font-weight: 600;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";;
+  text-shadow: 1px 1px #e6e6e6;
+  color: #575757;
 }
 
 h3:hover {
@@ -21,7 +45,7 @@ h3:hover {
 
 .tableList {
     display: grid;
-    grid-template-columns: repeat(6,auto);
+    grid-template-columns: repeat(4,auto);
     /* grid-auto-flow: column; */
     grid-gap: 2em;
 }
