@@ -1,0 +1,145 @@
+body {
+    background-color: aliceblue;
+    color: rgb(41, 40, 40);
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: smaller;
+}
+
+h1 {
+    margin: auto;
+    text-align: center;
+    width: 50%;
+    border-bottom: 2px black solid;
+    margin-bottom: 1em;
+}
+
+h3:hover {
+    color: black;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.tableList {
+    display: grid;
+    grid-template-columns: repeat(6,auto);
+    /* grid-auto-flow: column; */
+    grid-gap: 2em;
+}
+
+.hidden {
+    visibility: hidden;
+    height: 0em;
+}
+
+.fullTable {
+    background-color: white;
+    width: auto;
+    border-radius: 3px;
+    border: 1px solid black;
+    box-shadow: 3px 5px 3px 5px #888888;
+    margin-bottom: 2em;
+}
+
+.summaryTable {
+    background-color: white;
+    width: auto;
+    border-radius: 3px;
+    border: 1px solid black;
+    padding: 1em;
+    box-shadow: 3px 5px 3px 5px #888888;
+    max-width: 300px
+}
+
+.summaryTable:hover {
+    box-shadow: 3px 5px 3px 5px #575757;
+}
+
+.column {
+    border-bottom: 1px rgba(0, 0, 0, 0.336) solid;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.react-contextmenu {
+  min-width: 100px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #373a3c;
+  text-align: left;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.25rem;
+  outline: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 250ms ease !important;
+}
+
+.react-contextmenu.react-contextmenu--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.react-contextmenu-item {
+  padding: 3px 20px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #373a3c;
+  text-align: inherit;
+  white-space: nowrap;
+  background: 0 0;
+  border: 0;
+  cursor: pointer;
+}
+
+.react-contextmenu-item.react-contextmenu-item--active,
+.react-contextmenu-item.react-contextmenu-item--selected {
+  color: #fff;
+  background-color: #20a0ff;
+  border-color: #20a0ff;
+  text-decoration: none;
+}
+
+.react-contextmenu-item.react-contextmenu-item--disabled,
+.react-contextmenu-item.react-contextmenu-item--disabled:hover {
+  color: #878a8c;
+  background-color: transparent;
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.react-contextmenu-item--divider {
+  margin-bottom: 3px;
+  padding: 2px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  cursor: inherit;
+}
+.react-contextmenu-item--divider:hover {
+  background-color: transparent;
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.react-contextmenu-item.react-contextmenu-submenu {
+  padding: 0;
+}
+
+.react-contextmenu-item.react-contextmenu-submenu > .react-contextmenu-item {
+}
+
+.react-contextmenu-item.react-contextmenu-submenu
+  > .react-contextmenu-item:after {
+  content: "▶";
+  display: inline-block;
+  position: absolute;
+  right: 7px;
+}
+
+.example-multiple-targets::after {
+  content: attr(data-count);
+  display: block;
+}
+
+.react-grid-Cell__value {
+    cursor: cell;
+}
