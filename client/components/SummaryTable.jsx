@@ -1,27 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class SummaryTable extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            tableData: {}
-        }
-    }
-
-    render() {
-        const columns = [];
-        this.props.columns.forEach(c => {
-            columns.push(
-                <div className="column">{`${c.column_name}`}</div>
-            )
-        })
-        return (
-            <div className="summaryTable">
-                <h3 onClick={() => this.props.loadTable(this.props.id, this.props.primary_key)}>{`${this.props.id}`}</h3>
-                {columns}
-            </div>
-        );
-    }
+function SummaryTable({ columns, id, loadTable, primary_key }) {
+  return (
+    <div className="summaryTable">
+      <button type="button" onClick={() => loadTable(id, primary_key)}>{`${id}`}</button>
+      {columns.map((c) => <div className="column">{`${c.column_name}`}</div>)}
+    </div>
+  );
 }
+
 
 export default SummaryTable;

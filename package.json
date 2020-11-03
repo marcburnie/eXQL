@@ -1,17 +1,17 @@
 {
-  "name": "sql-db-visualizer-and-editor",
+  "name": "eXQL",
   "version": "1.0.0",
   "description": "Visualizer for SQL databases able to read and write data from a webpage",
   "main": "index.js",
   "scripts": {
     "start": "NODE_ENV=production node server/server.js",
     "build": "NODE_ENV=production webpack",
-    "dev": "concurrently \"cross-env NODE_ENV=development webpack-dev-server --open ./\" \"nodemon ./server/server.js\"",
+    "dev": "concurrently \"webpack-dev-server --open --hot\" \"NODE_ENV=development nodemon ./server/server.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/marcburnie/SQL-DB-Visualizer-and-Editor.git"
+    "url": "git+https://github.com/marcburnie/eXQL.git"
   },
   "keywords": [
     "SQL",
@@ -32,6 +32,12 @@
     "@types/webpack-dev-server": "^3.11.0",
     "concurrently": "^5.3.0",
     "cross-env": "^7.0.2",
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-jsx-a11y": "^6.3.0",
+    "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-react-hooks": "^4.0.0",
     "html-webpack-plugin": "^4.3.0",
     "jsxobj": "^1.1.0",
     "nodemon": "^2.0.4",

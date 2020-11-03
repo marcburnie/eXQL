@@ -1,0 +1,9 @@
+{
+  "extends": "airbnb",
+  "rules": {
+      "linebreak-style": 0
+    },
+  "globals": {
+    "fetch": false
+  }
+}
