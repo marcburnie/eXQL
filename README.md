@@ -1,4 +1,4 @@
-# SQL-DB-Visualizer-and-Editor
+# eXQL
 Visualizer for SQL databases able to read and write data from a databse using a website front end: https://pg-sql-visualizer.herokuapp.com/.
 
 Current Version Notes:
