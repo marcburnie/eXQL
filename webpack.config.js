@@ -9,9 +9,6 @@ module.exports = {
     rules: [
       {
         test: /\.jsx?/,
-        resolve: {
-          extensions: ['.jsx', '.js'],
-        },
         exclude: /(node_modules)/,
         use: {
           loader: 'babel-loader',
@@ -20,9 +17,23 @@ module.exports = {
           },
         },
       },
+      {
+        test: /\.ts$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
+      },
+      {
+        test: /\.css$/,
+        use: [
+		  'style-loader',
+		  'css-loader',
+		]
+      }
     ],
   },
-
+  resolve: {
+    extensions: ['.jsx', '.js', '.ts'],
+  },
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
