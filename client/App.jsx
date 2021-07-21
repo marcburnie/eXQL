@@ -38,7 +38,7 @@ class App extends Component {
     // update state when cell values change
     this.setState((state) => {
       const rows = state.rows.slice();
-      for (let i = fromRow; i <= toRow; i++) {
+      for (let i = fromRow; i <= toRow; i += 1) {
         rows[i] = { ...rows[i], ...updated };
       }
       return { rows };
