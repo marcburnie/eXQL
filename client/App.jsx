@@ -30,7 +30,10 @@ class App extends Component {
     const url = '/table';
     fetch(url)
       .then((response) => response.json())
-      .then((data) => this.setState({ ...this.state, tableData: data }))
+      .then((data) => this.setState((state) => {
+        const newState = { ...state, tableData: data };
+        return newState;
+      }))
       .catch((error) => console.log('Error:', error));
   }
 
@@ -43,29 +46,33 @@ class App extends Component {
       }
       return { rows };
     });
+
+    //destructure state variables
+    const {name, primary_key, rows} = this.state;
+
     // update database when cell values change
-    const url = `/table/${this.state.name}?primary_key=${this.state.primary_key}`;
+    const url = `/table/${name}?primary_key=${primary_key}`;
     // attempt to write last row if it has been modified
-    if (toRow === this.state.rows.length - 1) {
+    if (toRow === rows.length - 1) {
       fetch(url, {
         credentials: 'same-origin',
         method: 'POST',
-        body: JSON.stringify({ ...this.state.rows[this.state.rows.length - 1], ...updated }),
+        body: JSON.stringify({ ...rows[rows.length - 1], ...updated }),
         headers: new Headers({
           'Content-Type': 'application/json',
         }),
       }).then((response) => response.json())
         .then((addedRow) => {
           if (addedRow === true) {
-            this.loadTable(this.state.name, this.state.primary_key);
+            this.loadTable(name, primary_key);
           }
         })
         .catch((error) => console.log('Error:', error));
     }
     // check if the last row was updated - will send a seperate fetch request
-    if (fromRow < this.state.rows.length - 1) {
-      const from = this.state.rows[fromRow][this.state.primary_key];
-      const to = this.state.rows[toRow][this.state.primary_key];
+    if (fromRow < rows.length - 1) {
+      const from = rows[fromRow][primary_key];
+      const to = rows[toRow][primary_key];
 
       fetch(url, {
         credentials: 'same-origin',
@@ -82,14 +89,20 @@ class App extends Component {
     // load selected table
     const url = `/table/${tablename}?primary_key=${primary_key}`;
     fetch(url).then((response) => response.json())
-      .then((data) => this.setState({ ...this.state, ...data }))
+      .then((data) => this.setState((state) => {
+        const newState = { ...state, ...data };
+        return newState;
+      }))
       .catch((error) => console.log('Error:', error));
   }
 
   // delete row logic
   deleteRow(rowIdx) {
-    const url = `/table/${this.state.name}?primary_key=${this.state.primary_key}`;
-    const id = this.state.rows[rowIdx][this.state.primary_key];
+    // destructure state variables
+    const { name, primary_key, rows } = this.state;
+
+    const url = `/table/${name}?primary_key=${primary_key}`;
+    const id = rows[rowIdx][primary_key];
 
     fetch(url, {
       credentials: 'same-origin',
@@ -99,16 +112,17 @@ class App extends Component {
         'Content-Type': 'application/json',
       }),
     }).then(() => // update state with removed row
-      this.loadTable(this.state.name, this.state.primary_key))
+      this.loadTable(name, primary_key))
       .catch((error) => console.log('Error:', error));
   }
 
   render() {
+    // destructure table data
+    const { name, tableData, rows, columns } = this.state;
     const tables = [];
     // build list of tables - does not include current selected table
-    this.state.tableData.forEach((t, i) => {
-      console.log(t);
-      if (t.table_name !== this.state.name) {
+    tableData.forEach((t, i) => {
+      if (t.table_name !== name) {
         tables.push(
           <SummaryTable
             id={t.table_name}
@@ -122,15 +136,15 @@ class App extends Component {
       }
     });
     // for ReactDataGrid
-    const rowGetter = (rowNumber) => this.state.rows[rowNumber];
+    const rowGetter = (rowNumber) => rows[rowNumber];
 
     return (
       <div className="app">
-        <div className={`fullTable ${this.state.columns.length === 0 && 'hidden'}`}>
+        <div className={`fullTable ${columns.length === 0 && 'hidden'}`}>
           <ReactDataGrid
-            columns={this.state.columns}
+            columns={columns}
             rowGetter={rowGetter}
-            rowsCount={this.state.rows.length}
+            rowsCount={rows.length}
             minHeight={500}
             onGridRowsUpdated={this.onGridRowsUpdated}
             enableCellSelect
