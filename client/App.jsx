@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import ReactDataGrid from 'react-data-grid';
 import { Menu } from 'react-data-grid-addons';
 import SummaryTable from './components/SummaryTable';
 import TableContextMenu from './components/ContextMenu';
+import * as actions from './actions/actions';
 
 const {
   ContextMenu, MenuItem, SubMenu, ContextMenuTrigger,
@@ -10,45 +12,48 @@ const {
 // import 'react-data-grid/dist/react-data-grid.css';
 // import * as React from 'react';
 
+const mapStateToProps = (state) => {
+  return {
+    tableData: state.tables.tableData,
+    name: state.tables.name,
+    columns: state.tables.columns,
+    rows: state.tables.rows,
+    primary_key: state.tables.primary_key,
+  }
+}
+;
+
+const mapDispatchToProps = (dispatch) => ({
+  handleGetTables: (tableData) => dispatch(actions.getTables(tableData)),
+  handleGetTable: (name, columns, rows, primary_key) => dispatch(actions.getTable(name, columns, rows, primary_key)),
+  handleUpdateTable: (fromRow, toRow, updated) => dispatch(actions.updateTable(fromRow, toRow, updated)),
+});
+
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      tableData: [],
-      columns: [],
-      rows: [],
-      name: '',
-      primary_key: '',
-    };
     this.loadTable = this.loadTable.bind(this);
     this.onGridRowsUpdated = this.onGridRowsUpdated.bind(this);
     this.deleteRow = this.deleteRow.bind(this);
   }
 
+  componentWillMount() {
+    console.log("Component will mount", this.props);
+  }
   componentDidMount() {
+    console.log("Component did mount", this.props);
     // fetch database on load
     const url = '/table';
     fetch(url)
       .then((response) => response.json())
-      .then((data) => this.setState((state) => {
-        const newState = { ...state, tableData: data };
-        return newState;
-      }))
+      .then((data) => this.props.handleGetTables(data))
       .catch((error) => console.log('Error:', error));
   }
 
   onGridRowsUpdated({ fromRow, toRow, updated }) {
-    // update state when cell values change
-    this.setState((state) => {
-      const rows = state.rows.slice();
-      for (let i = fromRow; i <= toRow; i += 1) {
-        rows[i] = { ...rows[i], ...updated };
-      }
-      return { rows };
-    });
-
+    this.props.handleUpdateTable(fromRow, toRow, updated);
     //destructure state variables
-    const {name, primary_key, rows} = this.state;
+    const {name, primary_key, rows} = this.props;
 
     // update database when cell values change
     const url = `/table/${name}?primary_key=${primary_key}`;
@@ -89,17 +94,14 @@ class App extends Component {
     // load selected table
     const url = `/table/${tablename}?primary_key=${primary_key}`;
     fetch(url).then((response) => response.json())
-      .then((data) => this.setState((state) => {
-        const newState = { ...state, ...data };
-        return newState;
-      }))
+      .then(({name, columns, rows, primary_key}) => this.props.handleGetTable(name, columns, rows, primary_key))
       .catch((error) => console.log('Error:', error));
   }
 
   // delete row logic
   deleteRow(rowIdx) {
     // destructure state variables
-    const { name, primary_key, rows } = this.state;
+    const { name, primary_key, rows } = this.props;
 
     const url = `/table/${name}?primary_key=${primary_key}`;
     const id = rows[rowIdx][primary_key];
@@ -118,23 +120,13 @@ class App extends Component {
 
   render() {
     // destructure table data
-    const { name, tableData, rows, columns } = this.state;
-    const tables = [];
-    // build list of tables - does not include current selected table
-    tableData.forEach((t, i) => {
-      if (t.table_name !== name) {
-        tables.push(
-          <SummaryTable
-            id={t.table_name}
-            key={`table${i}`}
-            primary_key={t.primary_key}
-            columns={t.columns}
-            loadTable={this.loadTable}
+    const {
+      name,
+      tableData,
+      rows,
+      columns,
+    } = this.props;
 
-          />,
-        );
-      }
-    });
     // for ReactDataGrid
     const rowGetter = (rowNumber) => rows[rowNumber];
 
@@ -158,11 +150,19 @@ class App extends Component {
           />
         </div>
         <div className="tableList">
-          {tables}
+          {tableData.map((t, i) => {
+            return (t.table_name !== name) && <SummaryTable
+              id={t.table_name}
+              key={`table${i}`}
+              primary_key={t.primary_key}
+              columns={t.columns}
+              loadTable={this.loadTable}
+            />
+          })}
         </div>
       </div>
     );
   }
 }
 
-export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);
