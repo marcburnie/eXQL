@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 function SummaryTable({ columns, id, loadTable, primary_key }) {
   return (
@@ -8,6 +9,5 @@ function SummaryTable({ columns, id, loadTable, primary_key }) {
     </div>
   );
 }
-
 
 export default SummaryTable;

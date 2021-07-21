@@ -107,6 +107,7 @@ class App extends Component {
     const tables = [];
     // build list of tables - does not include current selected table
     this.state.tableData.forEach((t, i) => {
+      console.log(t);
       if (t.table_name !== this.state.name) {
         tables.push(
           <SummaryTable

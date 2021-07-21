@@ -60,6 +60,7 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.3.0",
+    "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-data-grid": "^6.1.0",
     "react-data-grid-addons": "^6.1.0",
