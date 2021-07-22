@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes, { string, bool, func, arrayOf, shape } from 'prop-types';
 import ReactDataGrid from 'react-data-grid';
 import { Menu } from 'react-data-grid-addons';
 import SummaryTable from './components/SummaryTable';
@@ -20,13 +21,16 @@ const mapStateToProps = (state) => {
     rows: state.tables.rows,
     primary_key: state.tables.primary_key,
   }
-}
-;
+};
 
 const mapDispatchToProps = (dispatch) => ({
   handleGetTables: (tableData) => dispatch(actions.getTables(tableData)),
-  handleGetTable: (name, columns, rows, primary_key) => dispatch(actions.getTable(name, columns, rows, primary_key)),
-  handleUpdateTable: (fromRow, toRow, updated) => dispatch(actions.updateTable(fromRow, toRow, updated)),
+  handleGetTable: (name, columns, rows, primary_key) => {
+    dispatch(actions.getTable(name, columns, rows, primary_key));
+  },
+  handleUpdateTable: (fromRow, toRow, updated) => {
+    dispatch(actions.updateTable(fromRow, toRow, updated));
+  },
 });
 
 class App extends Component {
@@ -37,23 +41,21 @@ class App extends Component {
     this.deleteRow = this.deleteRow.bind(this);
   }
 
-  componentWillMount() {
-    console.log("Component will mount", this.props);
-  }
   componentDidMount() {
-    console.log("Component did mount", this.props);
+    const { handleGetTables } = this.props;
     // fetch database on load
     const url = '/table';
     fetch(url)
       .then((response) => response.json())
-      .then((data) => this.props.handleGetTables(data))
+      .then((data) => handleGetTables(data))
       .catch((error) => console.log('Error:', error));
   }
 
   onGridRowsUpdated({ fromRow, toRow, updated }) {
-    this.props.handleUpdateTable(fromRow, toRow, updated);
-    //destructure state variables
-    const {name, primary_key, rows} = this.props;
+    // destructure state variables
+    const { handleUpdateTable, name, primary_key, rows } = this.props;
+
+    handleUpdateTable(fromRow, toRow, updated);
 
     // update database when cell values change
     const url = `/table/${name}?primary_key=${primary_key}`;
@@ -91,10 +93,11 @@ class App extends Component {
   }
 
   loadTable(tablename, primary_key) {
+    const { handleGetTable } = this.props;
     // load selected table
     const url = `/table/${tablename}?primary_key=${primary_key}`;
     fetch(url).then((response) => response.json())
-      .then(({name, columns, rows, primary_key}) => this.props.handleGetTable(name, columns, rows, primary_key))
+      .then(({name, columns, rows, primary_key}) => handleGetTable(name, columns, rows, primary_key))
       .catch((error) => console.log('Error:', error));
   }
 
@@ -120,6 +123,7 @@ class App extends Component {
 
   render() {
     // destructure table data
+    console.log(this.props)
     const {
       name,
       tableData,
@@ -164,5 +168,30 @@ class App extends Component {
     );
   }
 }
+
+App.propTypes = {
+  name: string.isRequired,
+  primary_key: string.isRequired,
+  tableData: arrayOf(shape({
+    table_name: string,
+    primary_key: string,
+    columns: arrayOf(shape({
+      column_name: string,
+      is_nullable: string,
+      data_type: string,
+    })),
+  })).isRequired,
+  columns: arrayOf(shape({
+    key: string,
+    name: string,
+    editable: bool,
+    filterable: bool,
+    sortable: bool,
+  })).isRequired,
+  rows: arrayOf(PropTypes.object).isRequired,
+  handleGetTable: func.isRequired,
+  handleGetTables: func.isRequired,
+  handleUpdateTable: func.isRequired,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

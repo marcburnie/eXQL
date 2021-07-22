@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { string, arrayOf, shape, func, bool } from 'prop-types';
 
 function SummaryTable({ columns, id, loadTable, primary_key }) {
   return (
@@ -9,5 +9,18 @@ function SummaryTable({ columns, id, loadTable, primary_key }) {
     </div>
   );
 }
+
+SummaryTable.propTypes = {
+  id: string.isRequired,
+  primary_key: string.isRequired,
+  columns: arrayOf(shape({
+    key: string,
+    name: string,
+    editable: bool,
+    filterable: bool,
+    sortable: bool,
+  })).isRequired,
+  loadTable: func.isRequired,
+};
 
 export default SummaryTable;
